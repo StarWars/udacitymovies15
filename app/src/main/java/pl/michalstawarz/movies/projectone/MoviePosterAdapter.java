@@ -1,56 +1,43 @@
 package pl.michalstawarz.movies.projectone;
 
+import android.app.Activity;
 import android.content.Context;
-import android.graphics.Movie;
+import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.Vector;
+
 /**
  * Created by Mychal on 2015-08-12.
  */
-public class MoviePosterAdapter extends BaseAdapter {
-    private Context mContext;
+public class MoviePosterAdapter extends ArrayAdapter<MovieModel> {
+    private Activity mContext;
     private MovieModel[] mMovies;
-    LayoutInflater in = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-    public MoviePosterAdapter(Context c, MovieModel[] movies) {
-        mContext = c;
-        mMovies = movies;
-    }
+    public MoviePosterAdapter(Activity context, MovieModel[] movies) {
+        super(context, R.layout.movie_poster_layout, movies);
 
-    @Override
-    public int getCount() {
-        return mMovies.length;
-    }
-
-    @Override
-    public Object getItem(int position) {
-        return position;
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return position;
+        this.mContext = context;
+        this.mMovies = movies;
     }
 
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+        LayoutInflater inflater = mContext.getLayoutInflater();
+        View rowView = inflater.inflate(R.layout.movie_poster_layout, null, true);
 
-        ViewHolder view = new ViewHolder();
-        view.imgView = (ImageView) convertView.findViewById(R.id.poster_layout_imageView);
+        ImageView posterView = (ImageView) rowView.findViewById(R.id.poster_layout_imageView);
+        MovieModel model = mMovies[position];
+        Picasso.with(mContext).load("http://image.tmdb.org/t/p/w185/" + model.backdrop_path).into(posterView);
 
-        Picasso.with(mContext).load("http://image.tmdb.org/t/p/w185/" + mMovies[position].backdrop_path).into(view.imgView);
-
-        return convertView;
+        return rowView;
     }
 
-    public static class ViewHolder    {
-        public ImageView imgView;
-    }
 }
